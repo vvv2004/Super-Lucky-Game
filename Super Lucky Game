@@ -1,0 +1,183 @@
+float heroR = 25;
+float heroX = 300;   
+float heroY = 300;
+int colour = 0;
+
+float fruitR = 10;
+float fruitX = 300;
+float fruitY = 300;
+
+float virusR = 10;
+float virusX = 0;
+float virusY = 0;
+
+int life = 5;
+int score = -1;
+int death = 0;
+int coins = 0;
+
+boolean gameOver = true;
+boolean gameWin = false;
+boolean start = false;
+boolean afterGame = false;
+boolean shop = false;
+void setup(){
+  size(600, 600);
+  frameRate(200);
+}
+void draw(){
+if(!!gameOver && !start){
+background(255);
+fill(255, 255, 0);
+ellipse(300, 400, 200, 200);
+fill(0, 255, 0);
+textSize(40);
+text("Късметлийската Игра", 90, 50);
+textSize(28);
+text("За да започнеш, натисни SPACE", 80, 200);
+text("Магазин: M", 200, 250);
+}  
+if(keyPressed && key == ' '){  
+  start = true;
+  gameOver = false;
+  afterGame = true;
+}
+if(keyPressed && key == 'm'){
+  shop = true;
+  gameOver = false;
+}
+  if(!!shop && !gameOver){
+    background(0);
+    textSize(30);
+    text("Магазин", 235, 50);
+    text("Цветове:", 234, 100 );
+    text("Пари: " + coins, 450, 100);
+    fill(255, 255, 0);
+    rect(150, 150, 50, 50);
+    fill(0, 255, 0);
+    rect(400, 150, 50, 50);
+    fill(0, 0, 255);
+    rect(150, 350, 50, 50);
+    fill(255, 0, 230);
+    rect(400, 350, 50, 50);
+    textSize(50);
+    text('1', 160, 250);
+    text('2', 410, 250);
+    text('3', 160, 450);
+    text('4', 410, 450);
+    text("За Изход: B", 280, 500);
+
+      if(keyPressed){
+        switch(key){
+          case '1': colour = 1;break;
+          case '2': colour = 2;break;
+          case '3': colour = 3;break;
+          case '4': colour = 4;break; 
+        }
+    }
+    if(keyPressed && key == 'b'){
+      shop = false;
+      gameOver = true;
+    }
+    
+  }
+  if(!gameOver && !!start){
+    background(0);
+    
+    if(colour == 0){
+      fill(255);
+    }
+    if(colour == 1){
+      fill(255, 255, 0);
+    }
+    if(colour == 2){
+      fill(0, 255, 0);
+    }
+    if(colour == 3){
+      fill(0, 0, 255);
+    }
+    if(colour == 4){
+      fill(255, 0, 233);
+    }
+    ellipse(heroX, heroY, heroR*2, heroR*2);
+    fill(255, 196, 0);
+    ellipse(fruitX, fruitY, fruitR*2, fruitR*2);
+    fill(255, 0 , 0);
+    ellipse(virusX, virusY, virusR*2, virusR*2);
+    if(keyPressed){
+      switch(key){
+        case 'w':heroY-- ;break;
+        case 's':heroY++ ;break;
+        case 'a':heroX-- ;break;
+        case 'd':heroX++ ;break;
+      } 
+    }
+
+    if(dist(heroX, heroY, fruitX, fruitY) < fruitR + heroR){
+      if(fruitR > heroR ){
+        score -= 2;
+      }
+      if(fruitR <= heroR){
+        score++;
+      }
+      fruitX = random(0, width);
+      fruitY = random(0, height);
+      fruitR = random(10, 35);
+      virusX = random(0, width);
+      virusY = random(0, height);
+    }
+    if(dist(heroX, heroY, virusX, virusY) < heroR + virusR){
+      life--;
+      fruitX = random(0, width);
+      fruitY = random(0, height);
+      fruitR = 10;
+      virusX = random(0, width);
+      virusY = random(0, height);
+    }
+    if(score < 0){
+      gameOver = true;
+    }
+    if(life <= 0){
+      gameOver = true;
+    }
+    if(score >= 20){
+      gameWin = true;
+    }
+    fill(0, 100, 0);
+    textSize(30);
+    text("Точки: " + score ,10, 50);
+    text("Животи: " + life ,450, 50);
+  }
+  if(!!gameOver && !!afterGame){
+    textSize(40);
+    text("ТИ ЗАГУБИ!", 200, 300);
+    text("Натисни: R", 210, 350);
+    if(keyPressed && key == 'r'){
+      gameOver = false;
+      life = 5;
+      score = 5;
+      death++;
+    }
+  }
+  if(!!gameWin){
+    background(0, 255, 0);
+    fill(255, 255, 0);
+    ellipse(300, 100, 200, 200);
+    fill(255, 0, 0);
+    text("Ти Победи!" , 215, 100);
+    fill(255);
+    text("Ти умря " + death + " пъти" , 10, 570);
+    textSize(28);
+    text("Натисни N ,aко искаш да се пробваш пак", 10, 300);
+    if(keyPressed && key == 'n'){
+      gameWin = false;
+      start = false;
+      afterGame = false;
+      gameOver = true;
+      score = 1;
+      life = 5;
+      heroX = random(0, width);
+      heroY = random(0, height);
+    }
+  }
+ }
